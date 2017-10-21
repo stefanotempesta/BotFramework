@@ -19,13 +19,19 @@ namespace Bot01.Dialogs
         {
             var activity = await result as Activity;
 
-            // calculate something for us to return
-            int length = (activity.Text ?? string.Empty).Length;
-
-            // return our reply to the user
-            await context.PostAsync($"You sent {activity.Text} which was {length} characters");
+            if (count == 0)
+            {
+                await context.PostAsync("Hi there, what's your name?");
+                count++;
+            }
+            else
+            {
+                await context.PostAsync($"Hello {activity.Text}, nice to meet you!");
+            }
 
             context.Wait(MessageReceivedAsync);
         }
+
+        private int count = 0;
     }
 }

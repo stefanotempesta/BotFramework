@@ -9,7 +9,7 @@ using Microsoft.Bot.Connector;
 namespace Bot04.Dialogs
 {
     [Serializable]
-    public class RouteDialog : IDialog<object>
+    public class DestinationDialog : IDialog<object>
     {
         public Task StartAsync(IDialogContext context)
         {
@@ -21,16 +21,13 @@ namespace Bot04.Dialogs
         private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
         {
             var activity = await result as Activity;
-            await context.PostAsync($"Your selected route is {activity.Text}.");
 
             PromptDialog.Confirm(
                 context,
                 ConfirmAsync,
-                "Do you confirm?",
+                $"Your selected destination is {activity.Text}. Do you confirm?",
                 "Try again (Yes/No)",
                 promptStyle: PromptStyle.Auto);
-
-            context.Wait(MessageReceivedAsync);
         }
 
         public async Task ConfirmAsync(IDialogContext context, IAwaitable<bool> argument)
@@ -38,11 +35,12 @@ namespace Bot04.Dialogs
             var confirm = await argument;
             if (confirm)
             {
-                await context.PostAsync("Route confirmed.");
+                await context.PostAsync("Destination confirmed.");
+                context.Wait(MessageReceivedAsync);
             }
             else
             {
-                context.Call(new RootDialog(), null);
+                context.Done("Goodbye.");
             }
         }
     }

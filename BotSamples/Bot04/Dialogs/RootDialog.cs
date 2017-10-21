@@ -21,44 +21,53 @@ namespace Bot04.Dialogs
         {
             var activity = await result as Activity;
 
-            ShowAvailableRoutes(activity);
-
-            if (IsAvailableRoute(activity.Text))
+            if (count == 0)
             {
-                await context.Forward(new RouteDialog(), this.ResumeAfter, activity, CancellationToken.None);
+                await ShowAvailableDestinations(context, activity);
+                count++;
+            }
+            else if (IsAvailableDestination(activity.Text))
+            {
+                await context.Forward(new DestinationDialog(), ResumeAfter, activity, CancellationToken.None);
             }
             else
             {
-                await context.PostAsync($"{activity.Text} is not an available route.");
+                await context.PostAsync($"{activity.Text} is not an available destination.");
                 context.Wait(this.MessageReceivedAsync);
             }
-
-            context.Wait(MessageReceivedAsync);
         }
 
-        private void ShowAvailableRoutes(Activity activity)
+        private async Task ShowAvailableDestinations(IDialogContext context, Activity activity)
         {
-            activity.SuggestedActions = new SuggestedActions()
+            Activity reply = activity.CreateReply();
+
+            reply.Text = "Where would you like to go?";
+            reply.SuggestedActions = new SuggestedActions()
             {
                 Actions = new List<CardAction>()
                 {
-                    new CardAction { Title = "Machame route", Type = ActionTypes.ImBack, Value = "machame" },
-                    new CardAction { Title = "Marangu route", Type = ActionTypes.ImBack, Value = "marangu" },
-                    new CardAction { Title = "Lemosho route", Type = ActionTypes.ImBack, Value = "lemosho" }
+                    new CardAction { Title = "Kilimanjaro", Type = ActionTypes.ImBack, Value = "Kilimanjaro" },
+                    new CardAction { Title = "Himalaya", Type = ActionTypes.ImBack, Value = "Himalaya" },
+                    new CardAction { Title = "Andes", Type = ActionTypes.ImBack, Value = "Andes" }
                 }
             };
+
+            await context.PostAsync(reply);
+            context.Wait(MessageReceivedAsync);
         }
 
-        private bool IsAvailableRoute(string text)
+        private bool IsAvailableDestination(string text)
         {
-            return new List<string> { "machame", "marangu", "lemosho" }
+            return new List<string> { "kilimanjaro", "himalaya", "andes" }
                 .Contains(text.ToLower());
         }
 
         private async Task ResumeAfter(IDialogContext context, IAwaitable<object> result)
         {
-            var message = await result as IMessageActivity;
-            context.Done($"Enjoy {message.Text}!");
+            var message = await result as string;
+            await context.PostAsync(message);
         }
+
+        private int count = 0;
     }
 }

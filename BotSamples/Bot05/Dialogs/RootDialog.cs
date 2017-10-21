@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using System.Threading;
+using System.Collections.Generic;
 
 namespace Bot05.Dialogs
 {
@@ -22,29 +23,36 @@ namespace Bot05.Dialogs
 
             StateClient state = activity.GetStateClient();
             BotData userData = await state.BotState.GetPrivateConversationDataAsync(activity.ChannelId, activity.Conversation.Id, activity.From.Id);
-            userData.SetProperty<string>("SelectedRoute", "route");
+            userData.SetProperty<string>("SelectedOptions", activity.Text);
 
-            if (activity.Text == "2")
+            if (count++ == 0)
             {
-                await context.Forward(new Step2Dialog(), this.ResumeAfter, activity, CancellationToken.None);
+                Activity reply = activity.CreateReply();
+                reply.AddHeroCard("Choose any option:", new List<string> { "2", "3" }, new List<string> { "Step 2", "Step 3" });
+                await context.PostAsync(reply);
+                context.Wait(MessageReceivedAsync);
+            }
+            else if (activity.Text == "2")
+            {
+                await context.Forward(new Step2Dialog(), ResumeAfter, activity, CancellationToken.None);
             }
             else if (activity.Text == "3")
             {
-                await context.Forward(new Step3Dialog(), this.ResumeAfter, activity, CancellationToken.None);
+                await context.Forward(new Step3Dialog(), ResumeAfter, activity, CancellationToken.None);
             }
             else
             {
                 await context.PostAsync($"Root: {activity.Text}");
                 context.Wait(this.MessageReceivedAsync);
             }
-
-            context.Wait(MessageReceivedAsync);
         }
 
         private async Task ResumeAfter(IDialogContext context, IAwaitable<object> result)
         {
             var message = await result;
-            await context.PostAsync($"ResumeAfter: {message}");
+            await context.PostAsync($"Resume after Root: {message}");
         }
+
+        private int count = 0;
     }
 }

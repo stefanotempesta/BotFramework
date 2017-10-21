@@ -59,7 +59,7 @@ namespace Bot02.Forms
                 .Confirm(async (state) =>
                 {
                     decimal price = await CalculatePrice(state);
-                    return new PromptAttribute($"Total price is {price}. Is that ok?");
+                    return new PromptAttribute($"Total price is ${price}. Is that ok?");
                 })
                 .Build();
         }
