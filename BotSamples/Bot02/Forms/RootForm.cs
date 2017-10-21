@@ -32,7 +32,7 @@ namespace Bot02.Forms
         public static IForm<RootForm> BuildForm()
         {
             return new FormBuilder<RootForm>()
-                .Message("Welcome")
+                .Message("Welcome to Kiligate")
                 .Field(nameof(Destination))
                 .Field(new FieldReflector<RootForm>(nameof(Route))
                     .SetType(null)  // null represents an enumeration field
