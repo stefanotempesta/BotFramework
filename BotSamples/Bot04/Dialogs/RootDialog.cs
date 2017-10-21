@@ -58,7 +58,7 @@ namespace Bot04.Dialogs
         private async Task ResumeAfter(IDialogContext context, IAwaitable<object> result)
         {
             var message = await result as IMessageActivity;
-            await context.PostAsync($"Enjoy {message.Text}!");
+            context.Done($"Enjoy {message.Text}!");
         }
     }
 }
