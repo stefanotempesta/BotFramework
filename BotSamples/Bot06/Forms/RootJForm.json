@@ -20,12 +20,12 @@
         "null"
       ],
       "enum": [
-        "Kilimangiaro",
+        "Kilimanjaro",
         "Himalaya",
         "Andes"
       ],
       "Values": {
-        "Kilimangiaro": {
+        "Kilimanjaro": {
           "Terms": [ "kili", "kilimanjaro" ]
         }
       }
@@ -48,7 +48,8 @@
         "WildSafari": {
           "Terms": [ "wild safari", "wild", "safari" ]
         }
-      }
+      },
+      "After": [ { "Confirm": [ "Do you confirm the {Experience} experience for destination {Destination}?" ] } ]
     }
   }
 }

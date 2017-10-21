@@ -9,7 +9,7 @@ using Microsoft.Bot.Connector;
 namespace Bot05.Dialogs
 {
     [Serializable]
-    public class Step3Dialog : IDialog<object>
+    public class NextStepDialog : IDialog<object>
     {
         public Task StartAsync(IDialogContext context)
         {
@@ -17,16 +17,15 @@ namespace Bot05.Dialogs
             return Task.CompletedTask;
         }
 
-        private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> argument)
+        private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> argument)
         {
-            var activity = await argument;
-            await context.PostAsync($"Step 3: {activity.Text}");
+            var activity = await argument as Activity;
 
             StateClient state = activity.GetStateClient();
             BotData userData = await state.BotState.GetPrivateConversationDataAsync(activity.ChannelId, activity.Conversation.Id, activity.From.Id);
-            string selectedRoute = userData.GetProperty<string>("SelectedRoute");
+            string selectedOption = userData.GetProperty<string>("SelectedOption");
 
-            context.Done($"From 3: {selectedRoute}");
+            context.Done($"Selection: {selectedOption}");
         }
     }
 }

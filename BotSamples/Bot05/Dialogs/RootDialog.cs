@@ -21,36 +21,27 @@ namespace Bot05.Dialogs
         {
             var activity = await result as Activity;
 
-            StateClient state = activity.GetStateClient();
-            BotData userData = await state.BotState.GetPrivateConversationDataAsync(activity.ChannelId, activity.Conversation.Id, activity.From.Id);
-            userData.SetProperty<string>("SelectedOptions", activity.Text);
-
             if (count++ == 0)
             {
                 Activity reply = activity.CreateReply();
-                reply.AddHeroCard("Choose any option:", new List<string> { "2", "3" }, new List<string> { "Step 2", "Step 3" });
+                reply.AddHeroCard("Choose any option:", new List<string> { "Hiking", "Safari" }, new List<string> { "Hiking", "Safari" });
                 await context.PostAsync(reply);
                 context.Wait(MessageReceivedAsync);
             }
-            else if (activity.Text == "2")
-            {
-                await context.Forward(new Step2Dialog(), ResumeAfter, activity, CancellationToken.None);
-            }
-            else if (activity.Text == "3")
-            {
-                await context.Forward(new Step3Dialog(), ResumeAfter, activity, CancellationToken.None);
-            }
             else
             {
-                await context.PostAsync($"Root: {activity.Text}");
-                context.Wait(this.MessageReceivedAsync);
+                StateClient state = activity.GetStateClient();
+                BotData userData = await state.BotState.GetPrivateConversationDataAsync(activity.ChannelId, activity.Conversation.Id, activity.From.Id);
+                userData.SetProperty<string>("SelectedOption", activity.Text);
+
+                await context.Forward(new NextStepDialog(), ResumeAfter, activity, CancellationToken.None);
             }
         }
 
         private async Task ResumeAfter(IDialogContext context, IAwaitable<object> result)
         {
             var message = await result;
-            await context.PostAsync($"Resume after Root: {message}");
+            await context.PostAsync($"{message}");
         }
 
         private int count = 0;

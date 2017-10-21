@@ -122,8 +122,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\MessagesController.cs" />
     <Compile Include="Dialogs\RootDialog.cs" />
-    <Compile Include="Dialogs\Step2Dialog.cs" />
-    <Compile Include="Dialogs\Step3Dialog.cs" />
+    <Compile Include="Dialogs\NextStepDialog.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

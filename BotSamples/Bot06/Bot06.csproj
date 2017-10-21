@@ -232,7 +232,6 @@
     <Content Include="packages.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Forms\RootJForm2.json" />
     <Content Include="Forms\RootJForm.json" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
